@@ -79,7 +79,7 @@ set :registry_password, opts[:registry_password] if opts[:registry_password]
 
 invoke('centurion:setup')
 if opts[:dry_run] 
-  Centurion::Mock.new(env).run
+  Centurion::DryRunner.new(env).run
   exit
 end
 

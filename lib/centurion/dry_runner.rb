@@ -1,26 +1,28 @@
 module Centurion
-  class Mock
+  class DryRunner
     def initialize(opts)
       environment = opts[:current_environment]
       @options = opts[environment]
     end
 
     def run
-      require 'pry-byebug'
-
-      result = hosts.map do |host|
-        string = "docker -H=tcp://#{host}:2375 run"
-
-        string << environment_vars unless env_vars.empty?
-        string << ports_vars unless ports_vars.empty?
-      end.join("\n\n\n ******* \n\n\n")
-      puts "#{result}"
+      puts result
     end
 
     private
 
     attr_reader :options
 
+    def result
+      require 'pry'
+      hosts.map do |host|
+        string = "docker -H=tcp://#{host}:2375 run"
+
+        string << environment_vars unless env_vars.empty?
+        string << ports_vars unless ports_vars.empty?
+        string
+      end.join("\n\n\n ******* \n\n\n")
+    end
 
     def env_vars
       options[:env_vars]
